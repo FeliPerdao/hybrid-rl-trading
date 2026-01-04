@@ -1,0 +1,11 @@
+{"timestamp": "2025-12-30T01:09:59.790382", "final_equity": 1.317808, "total_pnl": 0.317808, "trades": 1, "win_rate": 1.0, "profit_factor": null, "max_drawdown": 0.0, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T01:15:45.925427", "final_equity": 1.317808, "total_pnl": 0.317808, "trades": 1, "win_rate": 1.0, "profit_factor": null, "max_drawdown": 0.0, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T01:19:15.537229", "final_equity": 1.30521, "total_pnl": 0.30521, "trades": 8, "win_rate": 0.375, "profit_factor": 1.8447, "max_drawdown": -0.349376, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T01:38:47.095304", "final_equity": 1.273711, "total_pnl": 0.273711, "trades": 1, "win_rate": 1.0, "profit_factor": null, "max_drawdown": 0.0, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T01:43:37.332520", "final_equity": 1.334424, "total_pnl": 0.334424, "trades": 1, "win_rate": 1.0, "profit_factor": null, "max_drawdown": 0.0, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T01:48:53.521532", "final_equity": 1.407052, "total_pnl": 0.407052, "trades": 421, "win_rate": 0.5131, "profit_factor": 1.1329, "max_drawdown": -0.628433, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T01:54:52.259412", "final_equity": 0.996753, "total_pnl": -0.003247, "trades": 2, "win_rate": 0.5, "profit_factor": 0.4654, "max_drawdown": -0.006074, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T01:59:21.051967", "final_equity": 1.337884, "total_pnl": 0.337884, "trades": 1, "win_rate": 1.0, "profit_factor": null, "max_drawdown": 0.0, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T02:05:50.789707", "final_equity": 1.13274, "total_pnl": 0.13274, "trades": 197, "win_rate": 0.4315, "profit_factor": 1.0596, "max_drawdown": -0.508274, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2025-12-30T02:19:17.640724", "final_equity": 1.338445, "total_pnl": 0.338445, "trades": 1, "win_rate": 1.0, "profit_factor": null, "max_drawdown": 0.0, "params": {"REGIME_THRESHOLD": 0.7}}
+{"timestamp": "2026-01-03T23:59:03.582667", "final_equity": 1.338662, "total_pnl": 0.338662, "trades": 1, "win_rate": 1.0, "profit_factor": null, "max_drawdown": 0.0, "params": {"REGIME_THRESHOLD": 0.7}}
