@@ -42,13 +42,9 @@ def nuke_everything():
 # ---------- main ----------
 
 def main():
-        # ===== parámetros de experimento =====
-    config.REGIME_THRESHOLD = 0.7
-    config.PENALTY_FACTOR = 0.15
-    config.ML_TARGET = "return_5m"
     print("""
 ==============================
-   TRADING SYSTEM CONTROL
+TRADING SYSTEM CONTROL
 ==============================
 1 - Actualizar DATA
 2 - Recalcular FEATURES
@@ -56,6 +52,7 @@ def main():
 4 - Entrenar MODELO RL
 5 - BACKTEST
 6 - LIVE / PAPER
+8 - 🔁 GRID REGIME_THRESHOLD (0.64 → 0.80)
 9 - 🚀 RUN ALL FROM ZERO
 0 - Salir
 """)
@@ -93,12 +90,36 @@ def main():
         elif choice == "6":
             if ask("LIVE/PAPER puede perder guita. ¿Seguimos?"):
                 run("rl.live")
+                
+        elif choice == "8":
+            print("\n⚠️  GRID SEARCH HARDCODEADO DE REGIME_THRESHOLD")
+            print("Esto borra TODO y corre el pipeline completo por cada valor.")
 
-        elif choice == "9":
-            print("\n⚠️  ESTO BORRA DATA, FEATURES Y MODELOS")
-            if not ask("¿Seguro que querés empezar desde CERO absoluto?"):
+            if not ask("¿Seguro que querés hacer esto?"):
                 continue
 
+            for rt in [round(x, 2) for x in [0.660 + i * 0.02 for i in range(9)]]:
+                print("\n" + "=" * 50)
+                print(f"▶▶ REGIME_THRESHOLD = {rt}")
+                print("=" * 50)
+
+                # set config
+                config.REGIME_THRESHOLD = rt
+
+                # borrar todo
+                nuke_everything()
+
+                # pipeline completo
+                run("data.download_data")
+                run("features.build_features")
+                run("ml.train_ml")
+                run("rl.train_rl")
+                run("rl.backtest")
+
+            print("\n✅ GRID SEARCH TERMINADO")
+
+
+        elif choice == "9":
             nuke_everything()
 
             run("data.download_data")

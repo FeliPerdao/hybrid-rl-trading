@@ -4,3 +4,6 @@ PENALTY_FACTOR = 0.15
 ML_TARGET = "return_5m"
 ML_HORIZON = 24  # horas
 ML_TARGET_THRESHOLD = 0.015  # 1.5%
+MAX_HOLD = 24 #max candles it can wait to close operation
+TIMEFRAME = "1h"
+ASSET = "ETH"

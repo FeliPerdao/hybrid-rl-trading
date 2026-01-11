@@ -11,7 +11,9 @@ FEATURES_REGIME = "ml/feature_cols_regime.pkl"
 
 RL_MODEL_PATH = "rl/dqn_trader_regime"
 
-REGIME_THRESHOLD = config.REGIME_THRESHOLD
+#REGIME_THRESHOLD = config.REGIME_THRESHOLD
+#MAX_HOLD = config.MAX_HOLD
+
 
 def main():
     df = pd.read_csv(DATA_PATH)
@@ -22,12 +24,14 @@ def main():
 
     model_regime = joblib.load(MODEL_REGIME)
     regime_proba = model_regime.predict_proba(features)[:, 1]
-    regime_on = (regime_proba > REGIME_THRESHOLD).astype(int)
+    regime_on = (regime_proba > config.REGIME_THRESHOLD).astype(int)
+
 
     env = TradingEnv(
         features_df=features,
         price_series=prices,
-        regime_on=pd.Series(regime_on)
+        regime_on=pd.Series(regime_on),
+        max_hold=config.MAX_HOLD,
     )
 
     model = DQN(
