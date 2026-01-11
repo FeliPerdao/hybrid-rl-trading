@@ -58,7 +58,7 @@ class TradingEnv(gym.Env):
         return np.concatenate([
             self.X.iloc[self.step_idx].values.astype(np.float32),
             np.array([
-                self.regime_on.iloc[self.step_idx],
+                float(self.regime_on.iloc[self.step_idx]),
                 self.position,
                 self.hold_time
             ],
@@ -72,19 +72,21 @@ class TradingEnv(gym.Env):
         trade_hold_time = None
 
         price = self.prices.iloc[self.step_idx]
-        regime = self.regime_on.iloc[self.step_idx]
+        regime = float(self.regime_on.iloc[self.step_idx])
+        regime_weight = regime
         
         #Rule: forbid closing a position in the same candle (prevents zero-duration trades)
         if action == 2 and self.position == 1 and self.hold_time == 0:
             action = 0
 
-        #Backtest rule: oppening trades is forbiden when regime is OFF
-        if self.mode == "backtest" and regime == 0 and action == 1:
-            action = 0
+        # THESE RULES BELOW WHERE MODIFIED TO CHANGE HARD RULES FOR SOFT WEIGHTS
+        # #Backtest rule: oppening trades is forbiden when regime is OFF
+        # if self.mode == "backtest" and regime == 0 and action == 1:
+        #     action = 0
 
-        #Training rule: penalize trying to trade in no trade regime
-        if self.mode == "train" and regime == 0 and action != 0:
-            reward -= 0.005
+        # #Training rule: penalize trying to trade in no trade regime
+        # if self.mode == "train" and regime == 0 and action != 0:
+        #     reward -= 0.005
 
         #ACTION: OPEN LONG -> regime is ON & agent is flat
         if regime == 1 and action == 1 and self.position == 0:
@@ -97,7 +99,7 @@ class TradingEnv(gym.Env):
             trade_hold_time = self.hold_time
             
             #Base reward: PnL - trading fee
-            reward += pnl - self.TRADE_FEE
+            reward += (pnl * regime_weight) - self.TRADE_FEE
             
             #Bonus for profitable trades and penalty for losses
             reward += (
@@ -113,7 +115,7 @@ class TradingEnv(gym.Env):
         if self.position == 1:
             self.hold_time += 1
             #Penalty to discourage over-holding
-            reward -= 0.001
+            reward -= 0.001 * (1.0 + (1.0 - regime_weight))
             
             #Time-out exit (force close if max holding time exceeded)
             if self.hold_time > self.max_hold:

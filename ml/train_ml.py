@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import joblib
 import config
 from sklearn.ensemble import GradientBoostingClassifier
@@ -12,16 +13,25 @@ FEATURES_PATH = "ml/feature_cols_regime.pkl"
 
 HORIZON = config.ML_HORIZON
 THRESHOLD = config.ML_TARGET_THRESHOLD
+DROP_COLS = [
+    "timestamp",
+    "open","high","low","close",
+    "ema20","ema50","ema100",
+    "atr14"
+]
 
 def build_target(df):
-    # Shift close price into the future by HORIZON steps
+    # Shift close price into the future by HORIZON steps and compute future return
     future_close = df["close"].shift(-HORIZON)
-    
-    #Compute future return over the horizon
     future_ret = (future_close / df["close"]) - 1
     
-    #Regime label: 1-> price movement (tradable regime) / 0 -> low volatility or noise (no-trade regime)
-    return (future_ret.abs() > THRESHOLD).astype(int)
+    #The target is builted with the bias detection up, down or noise (in betweeen)
+    #It makes neutral (1) in all table, and later modifies to down (0) or up (2) when corresponds
+    target = np.ones(len(df), dtype=int)   # 1 = neutro
+    target[future_ret < -THRESHOLD] = 0
+    target[future_ret > THRESHOLD] = 2
+
+    return pd.Series(target, index=df.index)
 
 
 def main():
@@ -30,9 +40,8 @@ def main():
     df["target"] = build_target(df)
     df = df.dropna()
 
-    features = df.drop(columns=["timestamp", "target"])
+    features = df.drop(columns=DROP_COLS + ["target"])
     target = df["target"]
-
     joblib.dump(features.columns.tolist(), FEATURES_PATH)
 
     X_train, X_test, y_train, y_test = train_test_split(
