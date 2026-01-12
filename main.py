@@ -77,8 +77,7 @@ TRADING SYSTEM CONTROL
                 run("features.build_features")
 
         elif choice == "3":
-            if ask("Entrenar modelo ML ahora?"):
-                run("ml.train_ml")
+            run("ml.train_ml")
 
         elif choice == "4":
             if ask("Entrenar modelo RL ahora? (tarda)"):

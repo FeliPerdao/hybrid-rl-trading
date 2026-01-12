@@ -25,28 +25,49 @@ def rsi(series, period=14):
 def build_features(df):
     df = df.copy()
 
-    # Returns
+    # ============================
+    # RETURNS (momentum multi-scale)
+    # ============================
     df["ret_1h"] = df["close"].pct_change()
     df["ret_4h"] = df["close"].pct_change(4)
     df["ret_12h"] = df["close"].pct_change(12)
 
-    # Candle structure
+    # ============================
+    # CANDLE STRUCTURE
+    # ============================
     df["range_pct"] = (df["high"] - df["low"]) / df["close"]
     df["body_pct"] = (df["close"] - df["open"]) / df["close"]
 
-    # EMAs
+    # ============================
+    # EMAS
+    # ============================
     df["ema20"] = ema(df["close"], 20)
     df["ema50"] = ema(df["close"], 50)
     df["ema100"] = ema(df["close"], 100)
 
+    # Slopes
     df["ema20_slope"] = df["ema20"].pct_change()
-    df["ema_trend"] = (df["ema20"] > df["ema50"]).astype(int)
 
+    # EMA structure (trend)
+    df["ema_trend"] = (
+        (df["ema20"] > df["ema50"]) &
+        (df["ema50"] > df["ema100"])
+    ).astype(int)
+
+    # Distance to EMAs (THIS is what matters)
+    df["dist_ema20"] = (df["close"] - df["ema20"]) / df["close"]
+    df["dist_ema50"] = (df["close"] - df["ema50"]) / df["close"]
+    df["dist_ema100"] = (df["close"] - df["ema100"]) / df["close"]
+
+    # ============================
     # RSI
+    # ============================
     df["rsi14"] = rsi(df["close"], 14)
     df["rsi_slope"] = df["rsi14"].diff()
 
-    # ATR
+    # ============================
+    # ATR & VOLATILITY
+    # ============================
     tr = pd.concat([
         df["high"] - df["low"],
         (df["high"] - df["close"].shift()).abs(),
@@ -56,6 +77,18 @@ def build_features(df):
     df["atr14"] = tr.rolling(14).mean()
     df["atr_pct"] = df["atr14"] / df["close"]
 
+    # Volatility regime (z-score)
+    atr_mean = df["atr_pct"].rolling(100).mean()
+    atr_std  = df["atr_pct"].rolling(100).std()
+    df["vol_z"] = (df["atr_pct"] - atr_mean) / atr_std
+
+    # ============================
+    # VOLUME (the missing piece)
+    # ============================
+    vol_ma = df["volume"].rolling(20).mean()
+    df["vol_rel"] = df["volume"] / vol_ma
+
+    # ============================
     df = df.dropna()
     return df
 
