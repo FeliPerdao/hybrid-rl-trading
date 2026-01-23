@@ -6,6 +6,9 @@ import os
 DATA_DIR = "data"
 SYMBOL = "ETH/USDT"
 
+TIMEFRAMES = ["1m", "5m", "15m", "30m", "1h", "4h", "1d"]
+
+
 def fetch_ohlcv(symbol, timeframe, since_days=730):
     exchange = ccxt.binance({"enableRateLimit": True})
 
@@ -74,5 +77,9 @@ def update_or_download(timeframe):
 
 
 def run():
-    for tf in ["30m", "1h"]:
+    for tf in TIMEFRAMES:
         update_or_download(tf)
+
+
+if __name__ == "__main__":
+    run()
