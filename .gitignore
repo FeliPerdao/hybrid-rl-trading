@@ -11,3 +11,5 @@ data/
 *.jsonl
 data/
 features/
+*.png
+regime_classified/
